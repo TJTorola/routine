@@ -15,16 +15,26 @@ import AsyncStorage from '@react-native-community/async-storage';
 const isAndroid = Platform.OS == "android";
 const viewPadding = 10;
 
-const TASKS_KEY = '@tasks';
+const TASKS = '@TASKS:3';
+const TASK_KEY = '@TASK_KEY:0';
 
 const getTasks = async () => {
-  const jsonValue = await AsyncStorage.getItem(TASKS_KEY);
+  const jsonValue = await AsyncStorage.getItem(TASKS);
   return jsonValue !== null ? JSON.parse(jsonValue) : [];
 }
 
 const saveTasks = async tasks => {
   const jsonValue = JSON.stringify(tasks);
-  await AsyncStorage.setItem(TASKS_KEY, jsonValue);
+  await AsyncStorage.setItem(TASKS, jsonValue);
+}
+
+const getKey = async () => {
+  const storedKey = await AsyncStorage.getItem(TASK_KEY);
+  const key = storedKey !== null ? parseInt(storedKey, 10) : 0;
+  const nextKey = (key + 1).toString();
+  await AsyncStorage.setItem(TASK_KEY, nextKey);
+
+  return key.toString();
 }
 
 export default class TodoList extends Component {
@@ -32,8 +42,6 @@ export default class TodoList extends Component {
     tasks: null,
     text: ""
   };
-
-  key = 0
 
   async componentDidMount() {
     Keyboard.addListener(
@@ -52,11 +60,11 @@ export default class TodoList extends Component {
 
   setText = text => this.setState({ text })
 
-  addTask = () => {
+  addTask = async () => {
     const text = this.state.text.trim();
     if (text.length === 0) return;
 
-    const key = (this.key++).toString();
+    const key = await getKey();
     const tasks = [
       ...this.state.tasks,
       { key, text }
