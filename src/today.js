@@ -1,8 +1,36 @@
 import React from 'react';
-import { Layout, Text } from '@ui-kitten/components';
+import { Text } from 'react-native';
+import { Divider, List, ListItem } from '@ui-kitten/components';
 
-export default () => (
-  <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text category='h1'>TODAY</Text>
-  </Layout>
-);
+import { getRoutine } from './storage';
+
+class Today extends React.Component {
+  state = {
+    routine: null,
+  }
+
+  async componentDidMount() {
+    const { routine } = await getRoutine();
+    this.setState({ routine });
+  }
+
+  renderTask = ({ item }) => (
+    <ListItem key={item.id} title={item.task} />
+  )
+
+  render() {
+    if (this.state.routine === null) {
+      return <Text>Loading</Text>;
+    }
+
+    return (
+      <List
+        data={this.state.routine}
+        renderItem={this.renderTask}
+        ItemSeparatorComponent={Divider}
+      />
+    );
+  }
+}
+
+export default Today;
