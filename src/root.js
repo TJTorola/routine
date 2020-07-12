@@ -28,6 +28,9 @@ const BottomTabBar = ({ navigation, state }) => (
   </BottomNavigation>
 );
 
+// TODO: Move the routine loading/persistance up to this level and see if there
+// is a way to hold off on removing splash screen until it is loaded.
+
 export default () => (
   <>
     <IconRegistry icons={EvaIconsPack}/>
