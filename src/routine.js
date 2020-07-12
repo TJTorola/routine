@@ -1,13 +1,25 @@
 import React from 'react';
 import { Button, Layout, List, ListItem, Text, Input, Divider } from '@ui-kitten/components';
 
+import { setRoutine, getRoutine } from './storage';
+
 class Routine extends React.Component {
   state = {
-    tasks: [],
+    routine: null,
     newTask: '',
   }
 
-  taskId = 0
+  async componentDidMount() {
+    const { taskId, routine } = await getRoutine();
+    this.taskId = taskId;
+    this.setState({ routine });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.routine !== this.state.routine) {
+      setRoutine({ taskId: this.taskId, routine: this.state.routine });
+    }
+  }
 
   addTask = () => {
     const task = this.state.newTask.trim();
@@ -15,13 +27,13 @@ class Routine extends React.Component {
 
     const id = this.taskId++;
 
-    this.setState({ tasks: [...this.state.tasks, { task, id }], newTask: '' });
+    this.setState({ routine: [...this.state.routine, { task, id }], newTask: '' });
   }
 
   removeTask = id => () => {
     // TODO make this ID specific
-    const tasks = this.state.tasks.filter(t => t.id !== id);
-    this.setState({ tasks });
+    const routine = this.state.routine.filter(t => t.id !== id);
+    this.setState({ routine });
   }
 
   setNewTask = newTask => this.setState({ newTask });
@@ -33,10 +45,14 @@ class Routine extends React.Component {
   )
 
   render() {
+    if (this.state.routine === null) {
+      return null;
+    }
+
     return (
       <>
         <List
-          data={this.state.tasks}
+          data={this.state.routine}
           renderItem={this.renderTask}
           ItemSeparatorComponent={Divider}
         />
