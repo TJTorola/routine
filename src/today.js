@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { Divider, List, ListItem, Toggle } from '@ui-kitten/components';
 
-import { getRoutine } from './storage';
+import { getRoutine, getTodaysTasks, setTodaysTask } from './storage';
 
 class Today extends React.Component {
   state = {
@@ -10,24 +10,32 @@ class Today extends React.Component {
   }
 
   async componentDidMount() {
-    const { routine } = await getRoutine();
+    const [
+      { routine },
+      todaysTasks,
+    ] = await Promise.all([
+      getRoutine(),
+      getTodaysTasks()
+    ]);
+
     const tasks = routine.map(task => ({
       ...task,
-      done: false
+      done: todaysTasks.some(tId => tId === task.id)
     }));
+
     this.setState({ tasks });
   }
 
   toggleTask = id => () => {
+    let done;
     const tasks = this.state.tasks.map(task => {
       if (task.id !== id) return task;
-      return {
-        ...task,
-        done: !task.done,
-      };
+      done = !task.done;
+      return { ...task, done };
     });
 
     this.setState({ tasks });
+    setTodaysTask(id, done);
   }
 
   renderTaskRight = task => () => (
