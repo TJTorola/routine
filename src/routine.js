@@ -86,26 +86,29 @@ class Routine extends React.Component {
     );
   }
 
+  renderFooter = props => (
+    <Input
+      {...props}
+      accessoryRight={this.renderAddIcon}
+      label="New Task:"
+      onChangeText={this.setNewTask}
+      onSubmitEditing={this.addTask}
+      value={this.state.newTask}
+    />
+  )
+
   render() {
     if (this.state.routine === null) {
       return null;
     }
 
     return (
-      <Card header={Header} style={{ margin: 10 }}>
+      <Card header={Header} footer={this.renderFooter} style={{ margin: 10 }}>
         <List
+          style={{ maxHeight: 400 }}
           data={this.state.routine}
           renderItem={this.renderTask}
           ItemSeparatorComponent={Divider}
-        />
-        <Divider />
-        <Input
-          accessoryRight={this.renderAddIcon}
-          label="New Task:"
-          onChangeText={this.setNewTask}
-          onSubmitEditing={this.addTask}
-          style={{ margin: 8, marginTop: 16 }}
-          value={this.state.newTask}
         />
       </Card>
     );

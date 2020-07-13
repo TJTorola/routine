@@ -60,6 +60,7 @@ class Today extends React.Component {
     return (
       <Card header={Header} style={{ margin: 10 }}>
         <List
+          style={{ maxHeight: 500 }}
           data={this.state.tasks}
           renderItem={this.renderTask}
           ItemSeparatorComponent={Divider}
