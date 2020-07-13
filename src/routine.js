@@ -1,7 +1,27 @@
 import React from 'react';
-import { Button, Layout, List, ListItem, Text, Input, Divider } from '@ui-kitten/components';
+import { View } from 'react-native';
+import {
+  Button,
+  Card,
+  Divider,
+  Icon,
+  Input,
+  Layout,
+  List,
+  ListItem,
+  Text,
+} from '@ui-kitten/components';
 
 import { setRoutine, getRoutine } from './storage';
+
+const Header = props => (
+  <View {...props}>
+    <Text>Daily Routine</Text>
+  </View>
+);
+
+const ExIcon = props => <Icon name="close" {...props} />;
+const PlusIcon = props => <Icon name="plus" {...props} />;
 
 class Routine extends React.Component {
   state = {
@@ -38,11 +58,33 @@ class Routine extends React.Component {
 
   setNewTask = newTask => this.setState({ newTask });
 
-  renderTaskRight = id => () => <Button onPress={this.removeTask(id)}>X</Button>
+  renderTaskRight = id => () => (
+    <Button
+      accessoryLeft={ExIcon}
+      appearance='outline'
+      onPress={this.removeTask(id)}
+      size="small"
+      status="danger"
+    />
+  )
 
   renderTask = ({ item }) => (
     <ListItem key={item.id} title={item.task} accessoryRight={this.renderTaskRight(item.id)} />
   )
+
+  renderAddIcon = props => {
+    const task = this.state.newTask.trim();
+    if (task.length === 0) return null;
+
+    return (
+      <Button
+        accessoryLeft={PlusIcon}
+        appearance="outline"
+        onPress={this.addTask}
+        size="small"
+      />
+    );
+  }
 
   render() {
     if (this.state.routine === null) {
@@ -50,17 +92,22 @@ class Routine extends React.Component {
     }
 
     return (
-      <>
+      <Card header={Header} style={{ margin: 10 }}>
         <List
           data={this.state.routine}
           renderItem={this.renderTask}
           ItemSeparatorComponent={Divider}
         />
-        <Layout style={{ flexDirection: 'row' }}>
-          <Input style={{ flex: 1 }} value={this.state.newTask} onChangeText={this.setNewTask} />
-          <Button onPress={this.addTask}>Add</Button>
-        </Layout>
-      </>
+        <Divider />
+        <Input
+          accessoryRight={this.renderAddIcon}
+          label="New Task:"
+          onChangeText={this.setNewTask}
+          onSubmitEditing={this.addTask}
+          style={{ margin: 8, marginTop: 16 }}
+          value={this.state.newTask}
+        />
+      </Card>
     );
   }
 }
