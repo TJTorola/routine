@@ -40,7 +40,11 @@ export default () => (
         paddingTop: (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight)
       }}>
         <NavigationContainer>
-          <Navigator headerMode='none' tabBar={props => <BottomTabBar {...props} />}>
+          <Navigator
+            headerMode='none'
+            initialRouteName="Today"
+            tabBar={props => <BottomTabBar {...props} />}
+          >
             <Screen name='Calendar' component={Calendar}/>
             <Screen name='Today' component={Today}/>
             <Screen name='Routine' component={Routine}/>
