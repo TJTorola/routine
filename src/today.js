@@ -45,7 +45,12 @@ class Today extends React.Component {
   }
 
   renderTaskRight = task => () => (
-    <Toggle key={task.id} checked={task.done} onChange={this.toggleTask(task.id)} />
+    <Toggle
+      checked={task.done}
+      key={task.id}
+      onChange={this.toggleTask(task.id)}
+      status={task.done ? 'success' : 'basic'}
+    />
   )
 
   renderTask = ({ item }) => (
