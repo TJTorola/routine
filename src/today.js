@@ -1,8 +1,14 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { Divider, List, ListItem, Toggle } from '@ui-kitten/components';
+import { View } from 'react-native';
+import { Card, Divider, List, ListItem, Text, Toggle } from '@ui-kitten/components';
 
 import { getRoutine, getTodaysTasks, setTodaysTask } from './storage';
+
+const Header = props => (
+  <View {...props}>
+    <Text>Daily Routine</Text>
+  </View>
+);
 
 class Today extends React.Component {
   state = {
@@ -52,11 +58,13 @@ class Today extends React.Component {
     }
 
     return (
-      <List
-        data={this.state.tasks}
-        renderItem={this.renderTask}
-        ItemSeparatorComponent={Divider}
-      />
+      <Card header={Header} style={{ margin: 10 }}>
+        <List
+          data={this.state.tasks}
+          renderItem={this.renderTask}
+          ItemSeparatorComponent={Divider}
+        />
+      </Card>
     );
   }
 }
