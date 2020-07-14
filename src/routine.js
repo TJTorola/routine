@@ -27,6 +27,7 @@ class Routine extends React.Component {
   state = {
     routine: null,
     newTask: '',
+    scrollSize: 400,
   }
 
   async componentDidMount() {
@@ -57,6 +58,11 @@ class Routine extends React.Component {
   }
 
   setNewTask = newTask => this.setState({ newTask });
+
+  handleLayout = e => {
+    const { height } = e.nativeEvent.layout;
+    this.setState({ scrollSize: height - 210 });
+  }
 
   renderTaskRight = id => () => (
     <Button
@@ -103,14 +109,16 @@ class Routine extends React.Component {
     }
 
     return (
-      <Card header={Header} footer={this.renderFooter} style={{ margin: 10 }}>
-        <List
-          style={{ maxHeight: 400 }}
-          data={this.state.routine}
-          renderItem={this.renderTask}
-          ItemSeparatorComponent={Divider}
-        />
-      </Card>
+      <View style={{ flex: 1 }} onLayout={this.handleLayout}>
+        <Card header={Header} footer={this.renderFooter} style={{ margin: 10 }}>
+          <List
+            style={{ maxHeight: this.state.scrollSize }}
+            data={this.state.routine}
+            renderItem={this.renderTask}
+            ItemSeparatorComponent={Divider}
+          />
+        </Card>
+      </View>
     );
   }
 }
